@@ -44,6 +44,17 @@ if [[ "$(echo "$suspended_cpanels")" == *"$siteuser"* ]];then
 # "site is suspended so i dont care about it, do not add it into the list, skip to next one"
 continue
 fi
+
+if [[ "$(host $site)" == *"not found: 3(NXDOMAIN)"* ]];then
+# do not report this site as domain not resolve to hosting, continue next site
+continue
+fi
+
+# This condition is for my hosting only. New hosting account has "Index of /" page with 3 files on it. So if client changed nothing, i want to skip/exclude his site
+#if [[ "$(curl --silent --max-time 3 $site)" == *"Index of"* && "$(curl --silent --max-time 3 $site|grep -vE "cgi-bin|favicon.ico|robots.txt"|wc -l)" == "9" ]];then
+#continue
+#fi
+
 # "Adding site to the active list"
 echo $site >> $thisscriptdir/sitesfromdomlogsactive
 #fi
